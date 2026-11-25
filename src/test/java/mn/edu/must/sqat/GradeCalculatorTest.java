@@ -1,6 +1,8 @@
 
 package mn.edu.must.sqat;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -103,5 +105,53 @@ class GradeCalculatorTest {
         double lab = 41;
         assertThrows(IllegalArgumentException.class,
                 () -> calc.totalScore(10, lab, 8, 8, 20));
+    }
+    
+    @ParameterizedTest
+    @CsvSource({
+        "100, A",
+        "95, A",
+        "90, A",
+        "89.99, B",
+        "80, B",
+        "79.99, C",
+        "70, C",
+        "69.99, D",
+        "60, D",
+        "59.99, F",
+        "0, F"
+    })
+    @DisplayName("Үсгэн үнэлгээний хязгаарын утгуудыг шалгах")
+    void letterGradeBoundaries(double score, String expected) {
+        // Өгөгдөл бэлтгэх
+        double input = score;
+
+        // Үйлдэл гүйцэтгэх
+        String actual = calc.letterGrade(input);
+
+        // Үр дүн шалгах
+        assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "10, 40, 10, 10, 30, 100",
+        "5, 20, 5, 5, 15, 50",
+        "0, 0, 0, 0, 0, 0",
+        "10, 30, 8, 7, 25, 80"
+    })
+    @DisplayName("Нийт онооны өөр өөр хувилбаруудыг шалгах")
+    void totalScoreCases(double att, double lab,
+                         double quiz1, double quiz2,
+                         double exam, double expected) {
+        // Өгөгдөл бэлтгэх
+        double attendance = att;
+
+        // Үйлдэл гүйцэтгэх
+        double actual = calc.totalScore(
+                attendance, lab, quiz1, quiz2, exam);
+
+        // Үр дүн шалгах
+        assertEquals(expected, actual);
     }
 }
